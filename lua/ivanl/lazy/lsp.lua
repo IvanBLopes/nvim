@@ -28,8 +28,7 @@ return {
 			ensure_installed = {
 				"lua_ls",
 				"rust_analyzer",
-                "tsserver",
-                "java_language_server",
+                "jdtls",
 			},
 			handlers = {
 				function(server_name) -- default handler (optional)
@@ -53,6 +52,15 @@ return {
 						}
 					}
 				end,
+
+                ["jdtls"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.jdtls.setup {
+                        settings = {
+                            java = { signatureHelp = {enabled = true}, contentProvider = {preferred = 'fernflower'}}
+                        },
+                    }
+                end
 			}
 		})
 
@@ -64,7 +72,7 @@ return {
 					require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
 				end,
 			},
-			mapping = cmp.mapping.preset.insert({
+			mapping = cmp.mapping({
 				['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
 				['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
 				['<C-y>'] = cmp.mapping.confirm({ select = true }),
